@@ -78,6 +78,35 @@ function draw() {
       vertex(sx, sy);
     }
     endShape();
+
+    // 繪製左眼外圈 (包含編號 247)
+    let leftEyeOuter = [130, 247, 30, 29, 27, 28, 56, 190, 243, 112, 26, 22, 23, 24, 110, 25];
+    strokeWeight(1);
+    beginShape(CLOSE); // 使用 CLOSE 讓線條首尾相連成圈
+    for (let i = 0; i < leftEyeOuter.length; i++) {
+      let index = leftEyeOuter[i];
+      let keypoint = face.keypoints[index];
+      
+      let sx = keypoint.x * ratioX;
+      let sy = keypoint.y * ratioY;
+      
+      vertex(sx, sy);
+    }
+    endShape();
+
+    // 繪製左眼內圈 (包含編號 246)
+    let leftEyeInner = [33, 246, 161, 160, 159, 158, 157, 173, 133, 155, 154, 153, 145, 144, 163, 7];
+    beginShape(CLOSE);
+    for (let i = 0; i < leftEyeInner.length; i++) {
+      let index = leftEyeInner[i];
+      let keypoint = face.keypoints[index];
+      
+      let sx = keypoint.x * ratioX;
+      let sy = keypoint.y * ratioY;
+      
+      vertex(sx, sy);
+    }
+    endShape();
   }
   pop();
 }
