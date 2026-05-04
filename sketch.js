@@ -43,12 +43,12 @@ function draw() {
     let ratioX = displayWidth / capture.width;
     let ratioY = displayHeight / capture.height;
 
-    // 第一組：粗線條 (15)
+    // 第一組：線條 (1)
     let points = [409, 270, 269, 267, 0, 37, 39, 40, 185, 61, 146, 91, 181, 84, 17, 314, 405, 321, 375, 291];
     
     noFill();
     stroke('red');
-    strokeWeight(15);
+    strokeWeight(1);
     strokeJoin(ROUND);
     
     beginShape();
