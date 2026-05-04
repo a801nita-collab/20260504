@@ -107,6 +107,34 @@ function draw() {
       vertex(sx, sy);
     }
     endShape();
+
+    // 繪製右眼外圈 (包含對應左眼 247 的編號 467)
+    let rightEyeOuter = [359, 467, 260, 259, 257, 258, 286, 414, 463, 341, 256, 252, 253, 254, 339, 255];
+    beginShape(CLOSE);
+    for (let i = 0; i < rightEyeOuter.length; i++) {
+      let index = rightEyeOuter[i];
+      let keypoint = face.keypoints[index];
+      
+      let sx = keypoint.x * ratioX;
+      let sy = keypoint.y * ratioY;
+      
+      vertex(sx, sy);
+    }
+    endShape();
+
+    // 繪製右眼內圈 (包含對應左眼 246 的編號 466)
+    let rightEyeInner = [263, 466, 388, 387, 386, 385, 384, 398, 362, 382, 381, 380, 374, 373, 390, 249];
+    beginShape(CLOSE);
+    for (let i = 0; i < rightEyeInner.length; i++) {
+      let index = rightEyeInner[i];
+      let keypoint = face.keypoints[index];
+      
+      let sx = keypoint.x * ratioX;
+      let sy = keypoint.y * ratioY;
+      
+      vertex(sx, sy);
+    }
+    endShape();
   }
   pop();
 }
