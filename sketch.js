@@ -2,6 +2,7 @@ let capture;
 let faceMesh;
 let faces = [];
 let options = { maxFaces: 1, refineLandmarks: false, flipHorizontal: false };
+let stars = [];
 
 function preload() {
   // 載入 ml5.js 的 faceMesh 模型
@@ -15,6 +16,16 @@ function setup() {
   capture.size(640, 480);
   // 隱藏預設產生的 HTML video 元件，我們只在 canvas 裡畫它
   capture.hide();
+
+  // 初始化星星位置（使用 0~1 的比例，確保縮放視窗時星星位置依然正確）
+  for (let i = 0; i < 200; i++) {
+    stars.push({
+      x: random(0, 1),
+      y: random(0, 1),
+      size: random(1, 3.5),
+      brightness: random(100, 255)
+    });
+  }
 
   // 開始偵測臉部
   faceMesh.detectStart(capture, gotFaces);
@@ -35,7 +46,18 @@ function draw() {
   // 為了達到左右顛倒效果：先移到影像顯示區域的右側，再進行水平縮放翻轉
   translate(x + displayWidth, y);
   scale(-1, 1);
-  image(capture, 0, 0, displayWidth, displayHeight);
+  
+  // 1. 先繪製黑色背景（只在 50% 影像區域內）
+  fill(0);
+  noStroke();
+  rect(0, 0, displayWidth, displayHeight);
+
+  // 1.5 繪製星星（在外層黑色的背景上）
+  noStroke();
+  for (let star of stars) {
+    fill(255, star.brightness);
+    circle(star.x * displayWidth, star.y * displayHeight, star.size);
+  }
 
   // 繪製臉部線條
   if (faces.length > 0) {
@@ -43,13 +65,32 @@ function draw() {
     let ratioX = displayWidth / capture.width;
     let ratioY = displayHeight / capture.height;
 
-    // 第一組：線條 (1)
-    let points = [409, 270, 269, 267, 0, 37, 39, 40, 185, 61, 146, 91, 181, 84, 17, 314, 405, 321, 375, 291];
-    
+    // 取得臉部最外層輪廓點位編號
+    let faceSilhouette = [10, 338, 297, 332, 284, 251, 389, 356, 454, 323, 361, 288, 397, 365, 379, 378, 377, 152, 148, 149, 150, 136, 172, 58, 132, 93, 234, 127, 162, 21, 54, 103, 67, 109];
+
+    // 2. 建立裁剪區域 (Clipping Mask)，讓影像只顯示在臉部輪廓內
+    push();
+    beginClip();
+    beginShape();
+    for (let i = 0; i < faceSilhouette.length; i++) {
+      let keypoint = face.keypoints[faceSilhouette[i]];
+      vertex(keypoint.x * ratioX, keypoint.y * ratioY);
+    }
+    endShape(CLOSE);
+    endClip();
+
+    // 繪製擷取的影像（只會出現在輪廓內，輪廓外會露出下層的黑色）
+    image(capture, 0, 0, displayWidth, displayHeight);
+    pop();
+
+    // 3. 繪製原本要求的紅色線條
     noFill();
     stroke('red');
     strokeWeight(1);
     strokeJoin(ROUND);
+
+    // 第一組：線條 (1)
+    let points = [409, 270, 269, 267, 0, 37, 39, 40, 185, 61, 146, 91, 181, 84, 17, 314, 405, 321, 375, 291];
     
     beginShape();
     for (let i = 0; i < points.length; i++) {
@@ -136,20 +177,20 @@ function draw() {
     }
     endShape();
 
-    // 繪製臉部最外層輪廓 (Face Silhouette)
-    let faceSilhouette = [10, 338, 297, 332, 284, 251, 389, 356, 454, 323, 361, 288, 397, 365, 379, 378, 377, 152, 148, 149, 150, 136, 172, 58, 132, 93, 234, 127, 162, 21, 54, 103, 67, 109];
-    strokeWeight(1);
+    // 繪製臉部最外層輪廓的線條
+    // 加入霓虹燈發光效果
+    push();
+    drawingContext.shadowBlur = 20; // 發光的範圍深度
+    drawingContext.shadowColor = 'red'; // 發光的顏色
+    strokeWeight(2); // 稍微加粗線條讓中心看起來像燈管
     beginShape(CLOSE);
     for (let i = 0; i < faceSilhouette.length; i++) {
       let index = faceSilhouette[i];
       let keypoint = face.keypoints[index];
-      
-      let sx = keypoint.x * ratioX;
-      let sy = keypoint.y * ratioY;
-      
-      vertex(sx, sy);
+      vertex(keypoint.x * ratioX, keypoint.y * ratioY);
     }
     endShape();
+    pop(); // 恢復狀態，避免發光效果影響到其他繪圖
   }
   pop();
 }
