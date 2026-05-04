@@ -135,6 +135,21 @@ function draw() {
       vertex(sx, sy);
     }
     endShape();
+
+    // 繪製臉部最外層輪廓 (Face Silhouette)
+    let faceSilhouette = [10, 338, 297, 332, 284, 251, 389, 356, 454, 323, 361, 288, 397, 365, 379, 378, 377, 152, 148, 149, 150, 136, 172, 58, 132, 93, 234, 127, 162, 21, 54, 103, 67, 109];
+    strokeWeight(1);
+    beginShape(CLOSE);
+    for (let i = 0; i < faceSilhouette.length; i++) {
+      let index = faceSilhouette[i];
+      let keypoint = face.keypoints[index];
+      
+      let sx = keypoint.x * ratioX;
+      let sy = keypoint.y * ratioY;
+      
+      vertex(sx, sy);
+    }
+    endShape();
   }
   pop();
 }
