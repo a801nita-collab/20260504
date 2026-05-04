@@ -193,6 +193,15 @@ function draw() {
     pop(); // 恢復狀態，避免發光效果影響到其他繪圖
   }
   pop();
+
+  // 在畫布正上方顯示學號與姓名
+  push();
+  fill(0); // 設定文字顏色為黑色
+  noStroke();
+  textSize(32);
+  textAlign(CENTER, TOP);
+  text('414730589 黃讌婷', width / 2, 20);
+  pop();
 }
 
 // 取得偵測結果的回呼函式
