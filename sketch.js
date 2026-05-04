@@ -40,6 +40,10 @@ function draw() {
   // 繪製臉部線條
   if (faces.length > 0) {
     let face = faces[0];
+    let ratioX = displayWidth / capture.width;
+    let ratioY = displayHeight / capture.height;
+
+    // 第一組：粗線條 (15)
     let points = [409, 270, 269, 267, 0, 37, 39, 40, 185, 61, 146, 91, 181, 84, 17, 314, 405, 321, 375, 291];
     
     noFill();
@@ -52,9 +56,9 @@ function draw() {
       let index = points[i];
       let keypoint = face.keypoints[index];
       
-      // 將座標從原始影片大小映射到顯示大小 (50% 畫面)
-      let sx = keypoint.x * (displayWidth / capture.width);
-      let sy = keypoint.y * (displayHeight / capture.height);
+      // 將座標從原始影片大小映射到顯示大小
+      let sx = keypoint.x * ratioX;
+      let sy = keypoint.y * ratioY;
       
       vertex(sx, sy);
     }
@@ -68,9 +72,8 @@ function draw() {
       let index = points2[i];
       let keypoint = face.keypoints[index];
       
-      // 將座標從原始影片大小映射到顯示大小
-      let sx = keypoint.x * (displayWidth / capture.width);
-      let sy = keypoint.y * (displayHeight / capture.height);
+      let sx = keypoint.x * ratioX;
+      let sy = keypoint.y * ratioY;
       
       vertex(sx, sy);
     }
