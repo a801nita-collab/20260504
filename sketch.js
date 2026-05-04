@@ -59,6 +59,22 @@ function draw() {
       vertex(sx, sy);
     }
     endShape();
+
+    // 繪製第二組臉部線條 (粗細為 1)
+    let points2 = [76, 77, 90, 180, 85, 16, 315, 404, 320, 307, 306, 408, 304, 303, 302, 11, 72, 73, 74, 184];
+    strokeWeight(1);
+    beginShape();
+    for (let i = 0; i < points2.length; i++) {
+      let index = points2[i];
+      let keypoint = face.keypoints[index];
+      
+      // 將座標從原始影片大小映射到顯示大小
+      let sx = keypoint.x * (displayWidth / capture.width);
+      let sy = keypoint.y * (displayHeight / capture.height);
+      
+      vertex(sx, sy);
+    }
+    endShape();
   }
   pop();
 }
